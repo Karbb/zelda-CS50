@@ -8,6 +8,8 @@
     cogden@cs50.harvard.edu
 ]]
 
+rnd = math.random
+
 VIRTUAL_WIDTH = 384
 VIRTUAL_HEIGHT = 216
 

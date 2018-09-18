@@ -158,6 +158,10 @@ function Room:update(dt)
         -- remove entity from the table if health is <= 0
         if entity.health <= 0 then
             entity.dead = true
+            if not entity.dropped then
+                table.insert(self.objects, GameObjectConsumable(GAME_OBJECT_DEFS['heart'], entity.x, entity.y))
+                entity.dropped = true
+            end
         elseif not entity.dead then
             entity:processAI({room = self}, dt)
             entity:update(dt)
@@ -181,6 +185,7 @@ function Room:update(dt)
         -- trigger collision callback on object
         if self.player:collides(object) then
             object:onCollide()
+            if object.type == 'consumable' then object:onConsume(self, k) end
         end
     end
 end

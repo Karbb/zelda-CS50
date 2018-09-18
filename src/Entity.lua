@@ -36,6 +36,7 @@ function Entity:init(def)
     self.flashTimer = 0
 
     self.dead = false
+    self.dropped = false
 end
 
 function Entity:createAnimations(animations)
@@ -62,6 +63,10 @@ end
 
 function Entity:damage(dmg)
     self.health = self.health - dmg
+end
+
+function Entity:heal(heal)
+    self.health = self.health + heal
 end
 
 function Entity:goInvulnerable(duration)

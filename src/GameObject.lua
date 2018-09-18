@@ -18,7 +18,7 @@ function GameObject:init(def, x, y)
     -- whether it acts as an obstacle or not
     self.solid = def.solid
 
-    self.defaultState = def.defaultState
+    self.defaultState = def.defaultState 
     self.state = self.defaultState
     self.states = def.states
 
@@ -38,5 +38,5 @@ end
 
 function GameObject:render(adjacentOffsetX, adjacentOffsetY)
     love.graphics.draw(gTextures[self.texture], gFrames[self.texture][self.states[self.state].frame or self.frame],
-        self.x + adjacentOffsetX, self.y + adjacentOffsetY)
+        self.x + (adjacentOffsetX or 0), self.y + (adjacentOffsetY or 0))
 end
