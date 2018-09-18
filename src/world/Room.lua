@@ -40,6 +40,8 @@ function Room:init(player)
     -- used for drawing when this room is the next room, adjacent to the active
     self.adjacentOffsetX = 0
     self.adjacentOffsetY = 0
+
+    self.player:goInvulnerable(1.5)
 end
 
 --[[
@@ -159,7 +161,9 @@ function Room:update(dt)
         if entity.health <= 0 then
             entity.dead = true
             if not entity.dropped then
-                table.insert(self.objects, GameObjectConsumable(GAME_OBJECT_DEFS['heart'], entity.x, entity.y))
+               if rnd(10) == 1 then 
+                    table.insert(self.objects, GameObjectConsumable(GAME_OBJECT_DEFS['heart'], entity.x, entity.y)) 
+                end
                 entity.dropped = true
             end
         elseif not entity.dead then
