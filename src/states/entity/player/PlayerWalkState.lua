@@ -38,6 +38,11 @@ function PlayerWalkState:update(dt)
         self.entity:changeState('swing-sword')
     end
 
+    --CS50: begin item lifting
+    if love.keyboard.wasPressed('return') then
+        self.entity:changeState('lift')
+    end
+
     -- perform base collision detection against walls
     EntityWalkState.update(self, dt)
 
