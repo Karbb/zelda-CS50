@@ -6,23 +6,20 @@
     cogden@cs50.harvard.edu
 ]]
 
-EntityWalkState = Class{__includes = BaseState}
+EntityThrowedState = Class{__includes = BaseState}
 
-function EntityWalkState:init(entity, dungeon)
+function EntityThrowedState:init(entity, dungeon, direction)
     self.entity = entity
-    self.entity:changeAnimation('walk-down')
-
+    
     self.dungeon = dungeon
-
-    -- used for AI control
-    self.moveDuration = 0
-    self.movementTimer = 0
 
     -- keeps track of whether we just hit a wall
     self.bumped = false
+
+    self.entity.direction = direction
 end
 
-function EntityWalkState:update(dt)
+function EntityThrowedState:update(dt)
     
     -- assume we didn't hit a wall
     self.bumped = false
@@ -76,7 +73,7 @@ function EntityWalkState:update(dt)
     end
 end
 
-function EntityWalkState:checkObjCollision()
+function EntityThrowedState:checkObjCollision()
     if self.dungeon ~= nil then
     local objects = self.dungeon.currentRoom.objects
 
@@ -88,33 +85,7 @@ function EntityWalkState:checkObjCollision()
     end
 end
 
-function EntityWalkState:processAI(params, dt)
-    local room = params.room
-    local directions = {'left', 'right', 'up', 'down'}
-
-    if self.moveDuration == 0 or self.bumped then
-        
-        -- set an initial move duration and direction
-        self.moveDuration = math.random(5)
-        self.entity.direction = directions[math.random(#directions)]
-        self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
-    elseif self.movementTimer > self.moveDuration then
-        self.movementTimer = 0
-
-        -- chance to go idle
-        if math.random(3) == 1 then
-            self.entity:changeState('idle')
-        else
-            self.moveDuration = math.random(5)
-            self.entity.direction = directions[math.random(#directions)]
-            self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
-        end
-    end
-
-    self.movementTimer = self.movementTimer + dt
-end
-
-function EntityWalkState:render()
+function EntityThrowedState:render()
     local anim = self.entity.currentAnimation
     love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
         math.floor(self.entity.x - self.entity.offsetX), math.floor(self.entity.y - self.entity.offsetY))

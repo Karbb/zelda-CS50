@@ -27,6 +27,7 @@ require 'src/states/BaseState'
 
 require 'src/states/entity/EntityIdleState'
 require 'src/states/entity/EntityWalkState'
+require 'src/states/entity/EntityThrowedState'
 
 require 'src/states/entity/player/PlayerIdleState'
 require 'src/states/entity/player/PlayerSwingSwordState'
@@ -35,6 +36,7 @@ require 'src/states/entity/player/PlayerWalkState'
 -- CS50: Player lift and carry items states
 require 'src/states/entity/player/PlayerLiftState'
 require 'src/states/entity/player/PlayerCarryState'
+require 'src/states/entity/player/PlayerCarryIdleState'
 
 require 'src/states/game/GameOverState'
 require 'src/states/game/PlayState'
@@ -57,7 +59,7 @@ gFrames = {
     ['character-walk'] = GenerateQuads(gTextures['character-walk'], 16, 32),
     ['character-swing-sword'] = GenerateQuads(gTextures['character-swing-sword'], 32, 32),
     ['character_pot_lift'] = GenerateQuads(gTextures['character_pot_lift'], 16, 32),
-    ['character_pot_walk'] = GenerateQuads(gTextures['character_pot_walk'], 32, 32),
+    ['character_pot_walk'] = GenerateQuads(gTextures['character_pot_walk'], 16, 32),
     ['entities'] = GenerateQuads(gTextures['entities'], 16, 16),
     ['hearts'] = GenerateQuads(gTextures['hearts'], 16, 16),
     ['switches'] = GenerateQuads(gTextures['switches'], 16, 18)

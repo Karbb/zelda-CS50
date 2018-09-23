@@ -72,25 +72,25 @@ ENTITY_DEFS = {
             },
             ['lift-down'] = {
                 frames = {1, 2, 3},
-                interval = 0.15,
+                interval = 0.1,
                 looping = false,
                 texture = 'character_pot_lift'
             },
             ['lift-right'] = {
                 frames = {4, 5, 6},
-                interval = 0.15,
+                interval = 0.1,
                 looping = false,
                 texture = 'character_pot_lift'
             },
             ['lift-up'] = {
                 frames = {7, 8, 9},
-                interval = 0.15,
+                interval = 0.1,
                 looping = false,
                 texture = 'character_pot_lift'
             },
             ['lift-left'] = {
                 frames = {10, 11, 12},
-                interval = 0.15,
+                interval = 0.1,
                 looping = false,
                 texture = 'character_pot_lift'
             },
@@ -112,6 +112,22 @@ ENTITY_DEFS = {
             ['carry-left'] = {
                 frames = {13, 14, 15, 16},
                 interval = 0.15,
+                texture = 'character_pot_walk'
+            },
+            ['carry-idle-left'] = {
+                frames = {13},
+                texture = 'character_pot_walk'
+            },
+            ['carry-idle-right'] = {
+                frames = {5},
+                texture = 'character_pot_walk'
+            },
+            ['carry-idle-down'] = {
+                frames = {1},
+                texture = 'character_pot_walk'
+            },
+            ['carry-idle-up'] = {
+                frames = {9},
                 texture = 'character_pot_walk'
             }
         }
@@ -284,5 +300,14 @@ ENTITY_DEFS = {
                 frames = {95}
             }
         }
+    },
+    ['pot'] = {
+        texture = 'tiles',
+        animations = {
+            ['default'] = {
+                frames = {248}
+            }
+        },
+        projectile = true
     }
 }
