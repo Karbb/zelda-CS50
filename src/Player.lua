@@ -26,10 +26,8 @@ function Player:collides(target)
 end
 
 function Player:pickObject(object)
-    if self.carriedObject == nil then
-        self.carriedObject = object
-        self.carriedObject:lift()
-    end
+    self.carriedObject = object
+    self.carriedObject:lift()
 end
 
 function Player:throwObject(object, room, direction)

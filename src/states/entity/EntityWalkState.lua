@@ -26,6 +26,11 @@ function EntityWalkState:update(dt)
     
     -- assume we didn't hit a wall
     self.bumped = false
+    
+    if self:checkObjCollision() then
+        self.bumped = true
+        return
+    end
 
     if self.entity.direction == 'left' then
         self.entity.x = self.entity.x - self.entity.walkSpeed * dt
@@ -78,10 +83,11 @@ end
 
 function EntityWalkState:checkObjCollision()
     if self.dungeon ~= nil then
-    local objects = self.dungeon.currentRoom.objects
+        local objects = self.dungeon.currentRoom.objects
 
         for k, obj in pairs(self.dungeon.currentRoom.objects) do
             if obj.solid and self.entity:collides(obj) then
+                print(self.entity)
                 return true
             end
         end
