@@ -28,32 +28,23 @@ end
 function Player:pickObject(object)
     if self.carriedObject == nil then
         self.carriedObject = object
+        self.carriedObject:lift()
     end
 end
 
-function Player:throwObject(object, entities, direction)
-    print_r(object)
-    local entityThrowed = Entity {
-        animations = ENTITY_DEFS['pot'].animations,
-        walkSpeed = ENTITY_DEFS['pot'].walkSpeed or 20,
+function Player:throwObject(object, room, direction)
+    local dx, dy = 0, 0;
+    if direction == "left" then
+        dx = -OBJECT_MOV_SPEED
+    elseif direction == "right" then
+        dx = OBJECT_MOV_SPEED
+    elseif direction == "up" then
+        dy = -OBJECT_MOV_SPEED
+    elseif direction == "down" then
+        dy = OBJECT_MOV_SPEED
+    end
 
-        -- ensure X and Y are within bounds of the map
-        x = object.x,
-        y = object.y,
-        
-        width = 16,
-        height = 16,
-
-        health = 1
-    }
-
-    table.insert(entities, entityThrowed)
-
-    entityThrowed.stateMachine = StateMachine {
-        ['throwed'] = function() return EntityThrowedState(entityThrowed, direction) end
-    }
-
-    entityThrowed:changeState('throwed')
+    object:fire(object, room, dx, dy)
 end
 
 function Player:render()

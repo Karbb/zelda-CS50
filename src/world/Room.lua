@@ -42,6 +42,8 @@ function Room:init(player)
     self.adjacentOffsetY = 0
 
     self.player:goInvulnerable(1.5)
+
+    self.projectiles = {}
 end
 
 --[[
@@ -91,7 +93,7 @@ function Room:generateObjects()
     ))
 
     -- CS50: added 
-    table.insert(self.objects, GameObject(
+    table.insert(self.objects, GameObjectThrowable(
         GAME_OBJECT_DEFS['pot'],
         math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
                     VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
@@ -166,6 +168,7 @@ function Room:update(dt)
     for i = #self.entities, 1, -1 do
         local entity = self.entities[i]
 
+        if entity.projectile then print(entity) end
         -- remove entity from the table if health is <= 0
         if entity.health <= 0 then
             entity.dead = true
@@ -201,6 +204,17 @@ function Room:update(dt)
             if object.type == 'consumable' then object:onConsume(self, k) end
         end
     end
+
+    for k, projectile in pairs(self.projectiles) do
+        projectile:update(dt)
+
+        for k, entity in pairs(self.entities) do
+            if entity:collides(projectile) then
+                projectile:destroy()
+                entity:damage(1)
+            end
+        end
+    end
 end
 
 function Room:render()
@@ -221,6 +235,10 @@ function Room:render()
 
     for k, object in pairs(self.objects) do
         object:render(self.adjacentOffsetX, self.adjacentOffsetY)
+    end
+
+    for k, projectile in pairs(self.projectiles) do
+        projectile:render(self.adjacentOffsetX, self.adjacentOffsetY)
     end
 
     for k, entity in pairs(self.entities) do

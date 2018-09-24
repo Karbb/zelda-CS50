@@ -46,7 +46,7 @@ function PlayerCarryIdleState:render()
     local carriedObject = self.entity.carriedObject
 
     if carriedObject ~= nil then
-        love.graphics.draw(gTextures[carriedObject.texture], gFrames[carriedObject.texture][(carriedObject.states[carriedObject.state].frame or carriedObject.frame)+234],
+        love.graphics.draw(gTextures[carriedObject.texture], gFrames[carriedObject.texture][(carriedObject.states[carriedObject.state].frame or carriedObject.frame)],
         math.floor(self.entity.x - self.entity.offsetX), math.floor(self.entity.y - self.entity.height + 16))
     end
     

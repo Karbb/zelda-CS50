@@ -37,8 +37,6 @@ function Entity:init(def)
 
     self.dead = false
     self.dropped = false
-
-    self.projectile = def.projectile or false
 end
 
 function Entity:createAnimations(animations)

@@ -300,14 +300,5 @@ ENTITY_DEFS = {
                 frames = {95}
             }
         }
-    },
-    ['pot'] = {
-        texture = 'tiles',
-        animations = {
-            ['default'] = {
-                frames = {248}
-            }
-        },
-        projectile = true
     }
 }

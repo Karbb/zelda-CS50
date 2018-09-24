@@ -56,7 +56,18 @@ GAME_OBJECT_DEFS = {
         states = {
             ['default'] = {
                 frame = 14
+            },
+            ['throwed'] = {
+                frame = 248
+            },
+            ['broken'] = {
+                frame = 52
             }
-        }
+        },
+        onThrow = function(self, room, dx, dy)
+            self.dx = dx;
+            self.dy = dy;
+            table.insert(room.projectiles, self)
+        end
     }
 }
