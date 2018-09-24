@@ -52,7 +52,7 @@ end
 function Room:generateEntities()
     local types = {'skeleton', 'slime', 'bat', 'ghost', 'spider'}
 
-    for i = 1, 1 do
+    for i = 1, rnd(MAX_ENTITY_NUMBER) do
         local type = types[math.random(#types)]
 
         table.insert(self.entities, Entity {
@@ -72,8 +72,8 @@ function Room:generateEntities()
         })
 
         self.entities[i].stateMachine = StateMachine {
-            ['walk'] = function() return EntityWalkState(self.entities[i]) end,
-            ['idle'] = function() return EntityIdleState(self.entities[i]) end
+            ['walk'] = function() return EntityWalkState(self.entities[i], self) end,
+            ['idle'] = function() return EntityIdleState(self.entities[i], self) end
         }
 
         self.entities[i]:changeState('walk')
@@ -84,27 +84,29 @@ end
     Randomly creates an assortment of obstacles for the player to navigate around.
 ]]
 function Room:generateObjects()
-    table.insert(self.objects, GameObject(
+    local switch = GameObject(
         GAME_OBJECT_DEFS['switch'],
         math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
                     VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
         math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
                     VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
-    ))
+    )
 
-    -- CS50: added
-    for i = 1, 20 do
-        table.insert(self.objects, GameObjectThrowable(
+    table.insert(self.objects, switch)
+
+    -- CS50: added pots
+    for i = 1, rnd(MAX_POTS_NUMBER) do
+
+        local pot = GameObjectThrowable(
             GAME_OBJECT_DEFS['pot'],
             math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
                         VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
             math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
                         VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
-        ))
-    end
+        )
 
-    -- get a reference to the switch
-    local switch = self.objects[1]
+        table.insert(self.objects, pot)
+    end
 
     -- define a function for the switch that will open all doors in the room
     switch.onCollide = function()
@@ -170,7 +172,6 @@ function Room:update(dt)
     for i = #self.entities, 1, -1 do
         local entity = self.entities[i]
 
-        if entity.projectile then print(entity) end
         -- remove entity from the table if health is <= 0
         if entity.health <= 0 then
             entity.dead = true
@@ -214,6 +215,12 @@ function Room:update(dt)
             if entity:collides(projectile) then
                 projectile:destroy()
                 entity:damage(1)
+            end
+        end
+
+        for k, obj in pairs(self.objects) do
+            if obj.type == 'switch' and obj:collides(projectile) then
+                obj:onCollide()
             end
         end
     end

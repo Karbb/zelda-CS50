@@ -11,6 +11,8 @@ function PlayerLiftState:init(player, dungeon)
     self.player = player
     self.dungeon = dungeon
 
+    self.room = self.dungeon.currentRoom
+
     -- render offset for spaced character sprite
     self.player.offsetY = 5
     self.player.offsetX = 0
@@ -55,10 +57,10 @@ function PlayerLiftState:update(dt)
 
     if self.player.currentAnimation.timesPlayed > 0 then
         -- check if hitbox collides with any entities in the scene
-        for k, object in pairs(self.dungeon.currentRoom.objects) do
+        for k, object in pairs(self.room.objects) do
             if object.type == 'liftable' and object.solid then
                 if self.carryHitbox:collides(object) then
-                    table.remove(self.dungeon.currentRoom.objects, k)
+                    table.remove(self.room.objects, k)
                     self.player:pickObject(object)
                     self.player:changeState('carry')
                     return
@@ -72,11 +74,11 @@ end
 
 function PlayerLiftState:checkObjCollision()
     if self.dungeon ~= nil then
-    local objects = self.dungeon.currentRoom.objects
+    local objects = self.room.objects
 
-        for k, obj in pairs(self.dungeon.currentRoom.objects) do
+        for k, obj in pairs(self.room.objects) do
             if obj.solid and obj.type == 'liftable' and self.player:collides(obj) then
-                table.remove(self.dungeon.currentRoom.objects, k)
+                table.remove(self.room.objects, k)
                 return true
             end
         end

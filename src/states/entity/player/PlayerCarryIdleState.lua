@@ -14,6 +14,8 @@ function PlayerCarryIdleState:init(entity, dungeon)
     self.entity = entity
     self.dungeon = dungeon
 
+    self.room = self.dungeon.currentRoom
+
     self.entity:changeAnimation('carry-idle-' .. self.entity.direction)
 end
 
@@ -33,7 +35,7 @@ function PlayerCarryIdleState:update(dt)
     if love.keyboard.wasPressed('return') then
         self.entity.carriedObject.x = self.entity.x
         self.entity.carriedObject.y = self.entity.y
-        self.entity:throwObject(self.entity.carriedObject, self.dungeon.currentRoom, self.entity.direction)
+        self.entity:throwObject(self.entity.carriedObject, self.room, self.entity.direction)
         self.entity:changeState('idle')
     end
 end

@@ -8,11 +8,11 @@
 
 EntityWalkState = Class{__includes = BaseState}
 
-function EntityWalkState:init(entity, dungeon)
+function EntityWalkState:init(entity, room)
     self.entity = entity
     self.entity:changeAnimation('walk-down')
 
-    self.dungeon = dungeon
+    self.room = room
 
     -- used for AI control
     self.moveDuration = 0
@@ -29,8 +29,6 @@ function EntityWalkState:update(dt)
     
     local oldX = self.entity.x
     local oldY = self.entity.y
-
-    
 
     if self.entity.direction == 'left' then
         self.entity.x = self.entity.x - self.entity.walkSpeed * dt
@@ -86,10 +84,10 @@ function EntityWalkState:update(dt)
 end
 
 function EntityWalkState:checkObjCollision()
-    if self.dungeon ~= nil then
-        local objects = self.dungeon.currentRoom.objects
+    if self.room ~= nil then
+        local objects = self.room.objects
 
-        for k, obj in pairs(self.dungeon.currentRoom.objects) do
+        for k, obj in pairs(self.room.objects) do
             if obj.solid and self.entity:collides(obj) then
                 return true
             end

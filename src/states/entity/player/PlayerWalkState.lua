@@ -12,6 +12,8 @@ function PlayerWalkState:init(player, dungeon)
     self.entity = player
     self.dungeon = dungeon
 
+    self.room = self.dungeon.currentRoom
+
     -- render offset for spaced character sprite
     self.entity.offsetY = 5
     self.entity.offsetX = 0
@@ -53,7 +55,7 @@ function PlayerWalkState:update(dt)
             -- temporarily adjust position
             self.entity.x = self.entity.x - PLAYER_WALK_SPEED * dt
             
-            for k, doorway in pairs(self.dungeon.currentRoom.doorways) do
+            for k, doorway in pairs(self.room.doorways) do
                 if self.entity:collides(doorway) and doorway.open then
 
                     -- shift entity to center of door to avoid phasing through wall
@@ -69,7 +71,7 @@ function PlayerWalkState:update(dt)
             -- temporarily adjust position
             self.entity.x = self.entity.x + PLAYER_WALK_SPEED * dt
             
-            for k, doorway in pairs(self.dungeon.currentRoom.doorways) do
+            for k, doorway in pairs(self.room.doorways) do
                 if self.entity:collides(doorway) and doorway.open then
 
                     -- shift entity to center of door to avoid phasing through wall
@@ -85,7 +87,7 @@ function PlayerWalkState:update(dt)
             -- temporarily adjust position
             self.entity.y = self.entity.y - PLAYER_WALK_SPEED * dt
             
-            for k, doorway in pairs(self.dungeon.currentRoom.doorways) do
+            for k, doorway in pairs(self.room.doorways) do
                 if self.entity:collides(doorway) and doorway.open then
 
                     -- shift entity to center of door to avoid phasing through wall
@@ -101,7 +103,7 @@ function PlayerWalkState:update(dt)
             -- temporarily adjust position
             self.entity.y = self.entity.y + PLAYER_WALK_SPEED * dt
             
-            for k, doorway in pairs(self.dungeon.currentRoom.doorways) do
+            for k, doorway in pairs(self.room.doorways) do
                 if self.entity:collides(doorway) and doorway.open then
 
                     -- shift entity to center of door to avoid phasing through wall

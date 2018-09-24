@@ -12,6 +12,8 @@ function PlayerCarryState:init(player, dungeon)
     self.entity = player
     self.dungeon = dungeon
 
+    self.room = self.dungeon.currentRoom
+
     -- render offset for spaced character sprite
     self.entity.offsetY = 5
     self.entity.offsetX = 0
@@ -43,7 +45,9 @@ function PlayerCarryState:update(dt)
 
     --CS50: begin item lifting
     if love.keyboard.wasPressed('return') then
-        self.entity:throwObject(self.entity.carriedObject, self.dungeon.currentRoom, self.entity.direction)
+        self.entity.carriedObject.x = self.entity.x
+        self.entity.carriedObject.y = self.entity.y
+        self.entity:throwObject(self.entity.carriedObject, self.room, self.entity.direction)
         self.entity:changeState('idle')
     end
 
@@ -57,7 +61,7 @@ function PlayerCarryState:update(dt)
             -- temporarily adjust position
             self.entity.x = self.entity.x - PLAYER_WALK_SPEED * dt
             
-            for k, doorway in pairs(self.dungeon.currentRoom.doorways) do
+            for k, doorway in pairs(self.room.doorways) do
                 if self.entity:collides(doorway) and doorway.open then
 
                     -- shift entity to center of door to avoid phasing through wall
@@ -73,7 +77,7 @@ function PlayerCarryState:update(dt)
             -- temporarily adjust position
             self.entity.x = self.entity.x + PLAYER_WALK_SPEED * dt
             
-            for k, doorway in pairs(self.dungeon.currentRoom.doorways) do
+            for k, doorway in pairs(self.room.doorways) do
                 if self.entity:collides(doorway) and doorway.open then
 
                     -- shift entity to center of door to avoid phasing through wall
@@ -89,7 +93,7 @@ function PlayerCarryState:update(dt)
             -- temporarily adjust position
             self.entity.y = self.entity.y - PLAYER_WALK_SPEED * dt
             
-            for k, doorway in pairs(self.dungeon.currentRoom.doorways) do
+            for k, doorway in pairs(self.room.doorways) do
                 if self.entity:collides(doorway) and doorway.open then
 
                     -- shift entity to center of door to avoid phasing through wall
@@ -105,7 +109,7 @@ function PlayerCarryState:update(dt)
             -- temporarily adjust position
             self.entity.y = self.entity.y + PLAYER_WALK_SPEED * dt
             
-            for k, doorway in pairs(self.dungeon.currentRoom.doorways) do
+            for k, doorway in pairs(self.room.doorways) do
                 if self.entity:collides(doorway) and doorway.open then
 
                     -- shift entity to center of door to avoid phasing through wall
