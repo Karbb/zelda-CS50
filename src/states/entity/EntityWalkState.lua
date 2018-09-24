@@ -27,16 +27,17 @@ function EntityWalkState:update(dt)
     -- assume we didn't hit a wall
     self.bumped = false
     
-    if self:checkObjCollision() then
-        self.bumped = true
-        return
-    end
+    local oldX = self.entity.x
+    local oldY = self.entity.y
+
+    
 
     if self.entity.direction == 'left' then
         self.entity.x = self.entity.x - self.entity.walkSpeed * dt
         
         if self:checkObjCollision() then
-            self.entity.x = self.entity.x + self.entity.walkSpeed * dt
+            self.entity.x = oldX
+            self.bumped = true
         end
         if self.entity.x <= MAP_RENDER_OFFSET_X + TILE_SIZE then 
             self.entity.x = MAP_RENDER_OFFSET_X + TILE_SIZE
@@ -46,7 +47,8 @@ function EntityWalkState:update(dt)
         self.entity.x = self.entity.x + self.entity.walkSpeed * dt
 
         if self:checkObjCollision() then
-            self.entity.x = self.entity.x - self.entity.walkSpeed * dt
+            self.entity.x = oldX
+            self.bumped = true
         end
 
         if self.entity.x + self.entity.width >= VIRTUAL_WIDTH - TILE_SIZE * 2 then
@@ -57,7 +59,8 @@ function EntityWalkState:update(dt)
         self.entity.y = self.entity.y - self.entity.walkSpeed * dt
 
         if self:checkObjCollision() then
-            self.entity.y = self.entity.y + self.entity.walkSpeed * dt
+            self.entity.y = oldY
+            self.bumped = true
         end
 
         if self.entity.y <= MAP_RENDER_OFFSET_Y + TILE_SIZE - self.entity.height / 2 then 
@@ -68,7 +71,8 @@ function EntityWalkState:update(dt)
         self.entity.y = self.entity.y + self.entity.walkSpeed * dt
 
         if self:checkObjCollision() then
-            self.entity.y = self.entity.y - self.entity.walkSpeed * dt
+            self.entity.y = oldY
+            self.bumped = true
         end
 
         local bottomEdge = VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) 
@@ -87,7 +91,6 @@ function EntityWalkState:checkObjCollision()
 
         for k, obj in pairs(self.dungeon.currentRoom.objects) do
             if obj.solid and self.entity:collides(obj) then
-                print(self.entity)
                 return true
             end
         end
