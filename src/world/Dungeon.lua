@@ -11,10 +11,15 @@ Dungeon = Class{}
 function Dungeon:init(player)
     self.player = player
 
-    self.rooms = {}
+    self.rooms = readRoomsFromFiles()
 
-    -- current room we're operating in
-    self.currentRoom = Room(self.player, self)
+    if #self.rooms > 0 then
+        self.currentRoom = RoomCSV(self.player)
+    else
+        -- current room we're operating in
+        self.currentRoom = Room(self.player)
+    end
+
 
     -- room we're moving camera to during a shift; becomes active room afterwards
     self.nextRoom = nil
@@ -139,3 +144,34 @@ function Dungeon:render()
         self.nextRoom:render()
     end
 end
+
+function readRoomsFromFiles()
+    local rooms = {}
+
+    if love.filesystem.exists("levels") then
+        local files = love.filesystem.getDirectoryItems("levels")
+        
+        for k, file in pairs(files) do
+            table.insert(rooms, parseLevel("levels" .. "/" .. file))
+        end
+
+        return rooms
+    end
+end
+
+function parseLevel(level)
+    local room = {}
+    for line in love.filesystem.lines(level) do
+        local row = line:split(",")
+        table.insert(room, row)
+    end
+
+    return room
+end
+
+function string:split(sep)
+    local sep, fields = sep, {}
+    local pattern = string.format("([^%s]+)", sep)
+    self:gsub(pattern, function(c) fields[#fields+1] = c end)
+    return fields
+ end

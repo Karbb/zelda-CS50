@@ -49,8 +49,8 @@ function EntityWalkState:update(dt)
             self.bumped = true
         end
 
-        if self.entity.x + self.entity.width >= VIRTUAL_WIDTH - TILE_SIZE * 2 then
-            self.entity.x = VIRTUAL_WIDTH - TILE_SIZE * 2 - self.entity.width
+        if self.entity.x + self.entity.width >= VIRTUAL_WIDTH - TILE_SIZE * MAP_COLLISION_OFFSET then
+            self.entity.x = VIRTUAL_WIDTH - TILE_SIZE * MAP_COLLISION_OFFSET - self.entity.width
             self.bumped = true
         end
     elseif self.entity.direction == 'up' then
