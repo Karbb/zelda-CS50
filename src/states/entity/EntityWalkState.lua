@@ -42,9 +42,6 @@ function EntityWalkState:init(entity, room)
         hitboxX = self.entity.x
         hitboxY = self.entity.y + self.entity.height
     end
-
-    self.collisionHitbox = Hitbox(hitboxX, hitboxY, hitboxWidth, hitboxHeight)
-    print_r(collisionHitbox)
 end
 
 function EntityWalkState:update(dt)
@@ -113,7 +110,7 @@ function EntityWalkState:checkObjCollision()
         local objects = self.room.objects
 
         for k, obj in pairs(self.room.objects) do
-            if obj.solid and self.collisionHitbox:collides(obj) then
+            if obj.solid and self.entity:collides(obj) then
                 return true
             end
         end
