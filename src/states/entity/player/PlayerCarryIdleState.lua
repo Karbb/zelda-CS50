@@ -33,8 +33,8 @@ function PlayerCarryIdleState:update(dt)
 
     --CS50: begin item lifting
     if love.keyboard.wasPressed('return') then
-        self.entity.carriedObject.x = self.entity.x
-        self.entity.carriedObject.y = self.entity.y
+        self.entity.carriedObject.x = self.entity.x 
+        self.entity.carriedObject.y = self.entity.y + 6
         self.entity:throwObject(self.entity.carriedObject, self.room, self.entity.direction)
         self.entity:changeState('idle')
     end

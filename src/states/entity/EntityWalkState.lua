@@ -20,6 +20,31 @@ function EntityWalkState:init(entity, room)
 
     -- keeps track of whether we just hit a wall
     self.bumped = false
+
+    if direction == 'left' then
+        hitboxWidth = 14
+        hitboxHeight = 14
+        hitboxX = self.entity.x + 1
+        hitboxY = self.entity.y + 1
+    elseif direction == 'right' then
+        hitboxWidth = 14
+        hitboxHeight = 14
+        hitboxX = self.entity.x + 1
+        hitboxY = self.entity.y + 1
+    elseif direction == 'up' then
+        hitboxWidth = 14
+        hitboxHeight = 14
+        hitboxX = self.entity.x + 1
+        hitboxY = self.entity.y + 1
+    else
+        hitboxWidth = 14
+        hitboxHeight = 14
+        hitboxX = self.entity.x
+        hitboxY = self.entity.y + self.entity.height
+    end
+
+    self.collisionHitbox = Hitbox(hitboxX, hitboxY, hitboxWidth, hitboxHeight)
+    print_r(collisionHitbox)
 end
 
 function EntityWalkState:update(dt)
@@ -88,7 +113,7 @@ function EntityWalkState:checkObjCollision()
         local objects = self.room.objects
 
         for k, obj in pairs(self.room.objects) do
-            if obj.solid and self.entity:collides(obj) then
+            if obj.solid and self.collisionHitbox:collides(obj) then
                 return true
             end
         end

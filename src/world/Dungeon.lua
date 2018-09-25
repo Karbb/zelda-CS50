@@ -14,7 +14,7 @@ function Dungeon:init(player)
     self.rooms = readRoomsFromFiles()
 
     if #self.rooms > 0 then
-        self.currentRoom = RoomCSV(self.player)
+        self.currentRoom = RoomCSV(self.player, self.rooms[1])
     else
         -- current room we're operating in
         self.currentRoom = Room(self.player)

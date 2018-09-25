@@ -44,4 +44,8 @@ end
 function GameObject:render(adjacentOffsetX, adjacentOffsetY)
     love.graphics.draw(gTextures[self.texture], gFrames[self.texture][self.states[self.state].frame or self.frame],
         self.x + (adjacentOffsetX or 0), self.y + (adjacentOffsetY or 0))
+
+    love.graphics.setColor(255, 0, 255, 255)
+    love.graphics.rectangle('line', self.x, self.y, self.width, self.height)
+    love.graphics.setColor(255, 255, 255, 255)
 end

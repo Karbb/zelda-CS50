@@ -69,5 +69,19 @@ GAME_OBJECT_DEFS = {
             self.dy = dy;
             table.insert(room.projectiles, self)
         end
+    },
+    ['wall'] = {
+        type = 'wall',
+        texture = 'tiles',
+        frame = 120,
+        width = 16,
+        height = 16,
+        solid = true,
+        defaultState = 'default',
+        states = {
+            ['default'] = {
+                frame = 120
+            }
+        }
     }
 }

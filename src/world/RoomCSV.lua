@@ -8,7 +8,7 @@
 
 RoomCSV = Class{}
 
-function RoomCSV:init(player)
+function RoomCSV:init(player, room)
     MAP_WIDTH = 20
     MAP_HEIGHT = 10
 
@@ -21,15 +21,17 @@ function RoomCSV:init(player)
     self.height = MAP_HEIGHT
 
     self.tiles = {}
-    self:generateWallsAndFloors()
+    self.objects = {}
+    self.entities = {}
+
+    self:generateWallsAndFloors(room)
 
     -- entities in the room
-    self.entities = {}
-    self:generateEntities()
+    self:generateEntities(room)
 
     -- game objects in the room
-    self.objects = {}
-    self:generateObjects()
+    self.switchesCount = 0
+    self:generateObjects(room)
 
     -- doorways that lead to other dungeon rooms
     self.doorways = {}
@@ -40,6 +42,7 @@ function RoomCSV:init(player)
 
     -- reference to player for collisions, etc.
     self.player = player
+    self:initPlayerCoordinates(room)
 
     -- used for centering the dungeon rendering
     self.renderOffsetX = MAP_RENDER_OFFSET_X
@@ -57,89 +60,103 @@ end
 --[[
     Randomly creates an assortment of enemies for the player to fight.
 ]]
-function RoomCSV:generateEntities()
-    local types = {'skeleton', 'slime', 'bat', 'ghost', 'spider'}
+function RoomCSV:generateEntities(room)
 
-    for i = 1, rnd(MAX_ENTITY_NUMBER) do
-        local type = types[math.random(#types)]
+    for y = 2, self.height-1 do
+        for x = 2, self.width-1 do
+            if room[y][x] == CSV_SKELETON then
+                self:generateEntity('skeleton', x ,y)
+            elseif room[y][x] == CSV_GHOST then
+                self:generateEntity('ghost', x ,y)
+            elseif room[y][x] == CSV_SLIME then
+                self:generateEntity('slime', x ,y)
+            end
 
-        table.insert(self.entities, Entity {
-            animations = ENTITY_DEFS[type].animations,
-            walkSpeed = ENTITY_DEFS[type].walkSpeed or 20,
-
-            -- ensure X and Y are within bounds of the map
-            x = math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
-                VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
-            y = math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
-                VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16),
-            
-            width = 16,
-            height = 16,
-
-            health = 1
-        })
-
-        self.entities[i].stateMachine = StateMachine {
-            ['walk'] = function() return EntityWalkState(self.entities[i], self) end,
-            ['idle'] = function() return EntityIdleState(self.entities[i], self) end
-        }
-
-        self.entities[i]:changeState('walk')
+        end
     end
+end
+
+function RoomCSV:generateEntity(type, x ,y)
+
+    local entity = Entity {
+        animations = ENTITY_DEFS[type].animations,
+        walkSpeed = ENTITY_DEFS[type].walkSpeed or 20,
+
+        -- ensure X and Y are within bounds of the map
+        x = MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+        y = MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE,
+        
+        width = 16,
+        height = 16,
+
+        health = 1
+    }
+
+    table.insert(self.entities, entity)
+
+    entity.stateMachine = StateMachine {
+        ['walk'] = function() return EntityWalkState(entity, self) end,
+        ['idle'] = function() return EntityIdleState(entity, self) end
+    }
+
+    entity:changeState('walk')
 end
 
 --[[
     Randomly creates an assortment of obstacles for the player to navigate around.
 ]]
-function RoomCSV:generateObjects()
-    local switch = GameObject(
-        GAME_OBJECT_DEFS['switch'],
-        math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
-                    VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
-        math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
-                    VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
-    )
+function RoomCSV:generateObjects(room)
 
-    table.insert(self.objects, switch)
+    for y = 2, self.height-1 do
+        for x = 2, self.width-1 do
+            if room[y][x] == CSV_SWITCH and self.switchesCount < 1 then
+                local switch = GameObject(
+                    GAME_OBJECT_DEFS['switch'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                )
 
-    -- CS50: added pots
-    for i = 1, rnd(MAX_POTS_NUMBER) do
+                -- define a function for the switch that will open all doors in the room
+                switch.onCollide = function()
+                    if switch.state == 'unpressed' then
+                        switch.state = 'pressed'
+                        
+                        -- open every door in the room if we press the switch
+                        for k, doorway in pairs(self.doorways) do
+                            doorway.open = true
+                        end
 
-        local pot = GameObjectThrowable(
-            GAME_OBJECT_DEFS['pot'],
-            math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
-                        VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
-            math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
-                        VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
-        )
+                        gSounds['door']:play()
+                    end
+                end
 
-        table.insert(self.objects, pot)
-    end
+                table.insert(self.objects, switch)
 
-    -- define a function for the switch that will open all doors in the room
-    switch.onCollide = function()
-        if switch.state == 'unpressed' then
-            switch.state = 'pressed'
-            
-            -- open every door in the room if we press the switch
-            for k, doorway in pairs(self.doorways) do
-                doorway.open = true
+                self.switchesCount = self.switchesCount + 1
+
+            elseif room[y][x] == CSV_POT then
+                local pot = GameObjectThrowable(
+                    GAME_OBJECT_DEFS['pot'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                )
+        
+                table.insert(self.objects, pot)
             end
-
-            gSounds['door']:play()
         end
-    end
+    end 
 end
 
 --[[
     Generates the walls and floors of the room, randomizing the various varieties
     of said tiles for visual variety.
 ]]
-function RoomCSV:generateWallsAndFloors()
+function RoomCSV:generateWallsAndFloors(room)
     for y = 1, self.height do
         table.insert(self.tiles, {})
 
         for x = 1, self.width do
+
             local id = TILE_EMPTY
 
             if x == 1 and y == 1 then
@@ -162,11 +179,32 @@ function RoomCSV:generateWallsAndFloors()
                 id = TILE_BOTTOM_WALLS[math.random(#TILE_BOTTOM_WALLS)]
             else
                 id = TILE_FLOORS[math.random(#TILE_FLOORS)]
+                if room[y][x] == CSV_WALL then
+                    id = TILE_CENTER_WALLS[math.random(#TILE_CENTER_WALLS)]
+                    local wall = GameObject(
+                        GAME_OBJECT_DEFS['wall'],
+                        MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                        MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                    )
+
+                    table.insert(self.objects, wall)
+                end
             end
             
             table.insert(self.tiles[y], {
                 id = id
             })
+        end
+    end
+end
+
+function RoomCSV:initPlayerCoordinates(room)
+    for y = 2, self.height-1 do
+        for x = 2, self.width-1 do
+            if room[y][x] == CSV_PLAYER then   
+               self.player.x = MAP_RENDER_OFFSET_X + (x-1)*self.player.width
+               self.player.y = MAP_RENDER_OFFSET_Y +(y-1)*self.player.width - 6
+            end
         end
     end
 end

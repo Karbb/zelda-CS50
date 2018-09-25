@@ -8,10 +8,13 @@
 
 Doorway = Class{}
 
-function Doorway:init(direction, open, room)
+function Doorway:init(direction, open, room, x, y)
     self.direction = direction
     self.open = open
     self.room = room
+
+    if x ~= nil then self.x = x end
+    if x ~= nil then self.x = x end
 
     if direction == 'left' then
         self.x = MAP_RENDER_OFFSET_X
