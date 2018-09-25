@@ -35,10 +35,7 @@ function RoomCSV:init(player, room)
 
     -- doorways that lead to other dungeon rooms
     self.doorways = {}
-    table.insert(self.doorways, Doorway('top', false, self))
-    table.insert(self.doorways, Doorway('bottom', false, self))
-    table.insert(self.doorways, Doorway('left', false, self))
-    table.insert(self.doorways, Doorway('right', false, self))
+    self:generateDoorways(room)
 
     -- reference to player for collisions, etc.
     self.player = player
@@ -160,23 +157,55 @@ function RoomCSV:generateWallsAndFloors(room)
             local id = TILE_EMPTY
 
             if x == 1 and y == 1 then
-                id = TILE_TOP_LEFT_CORNER
+            table.insert(self.objects, GameObject(
+                GAME_OBJECT_DEFS['top-left-wall'],
+                MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+            ))
             elseif x == 1 and y == self.height then
-                id = TILE_BOTTOM_LEFT_CORNER
+                table.insert(self.objects, GameObject(
+                    GAME_OBJECT_DEFS['bottom-left-wall'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                ))
             elseif x == self.width and y == 1 then
-                id = TILE_TOP_RIGHT_CORNER
+                table.insert(self.objects, GameObject(
+                    GAME_OBJECT_DEFS['top-right-wall'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                ))
             elseif x == self.width and y == self.height then
-                id = TILE_BOTTOM_RIGHT_CORNER
+                table.insert(self.objects, GameObject(
+                    GAME_OBJECT_DEFS['bottom-right-wall'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                ))
             
             -- random left-hand walls, right walls, top, bottom, and floors
             elseif x == 1 then
-                id = TILE_LEFT_WALLS[math.random(#TILE_LEFT_WALLS)]
+                table.insert(self.objects, GameObject(
+                    GAME_OBJECT_DEFS['left-wall'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                ))
             elseif x == self.width then
-                id = TILE_RIGHT_WALLS[math.random(#TILE_RIGHT_WALLS)]
+                table.insert(self.objects, GameObject(
+                    GAME_OBJECT_DEFS['right-wall'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                ))
             elseif y == 1 then
-                id = TILE_TOP_WALLS[math.random(#TILE_TOP_WALLS)]
+                table.insert(self.objects, GameObject(
+                    GAME_OBJECT_DEFS['top-wall'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                ))
             elseif y == self.height then
-                id = TILE_BOTTOM_WALLS[math.random(#TILE_BOTTOM_WALLS)]
+                table.insert(self.objects, GameObject(
+                    GAME_OBJECT_DEFS['bottom-wall'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                ))
             else
                 id = TILE_FLOORS[math.random(#TILE_FLOORS)]
                 if room[y][x] == CSV_WALL then
@@ -204,6 +233,40 @@ function RoomCSV:initPlayerCoordinates(room)
             if room[y][x] == CSV_PLAYER then   
                self.player.x = MAP_RENDER_OFFSET_X + (x-1)*self.player.width
                self.player.y = MAP_RENDER_OFFSET_Y +(y-1)*self.player.width - 6
+            end
+        end
+    end
+end
+
+function RoomCSV:generateDoorways(room)
+    
+    for y = 2, self.height - 1 do
+        for x = 1, self.width, self.width - 1 do
+            local direction = nil
+            if tonumber(room[y][x]) then
+                if y == 1 then direction = 'top'
+                elseif y == self.height then direction = 'bottom'
+                elseif x == 1 then direction = 'left'
+                elseif x == self.width then direction = 'right' end
+
+                --print(x, y, direction)
+                table.insert(self.doorways, Doorway(direction, false, self, x, y))
+            end
+        end
+    end
+
+    for x = 2, self.width - 1 do
+        for y = 1, self.height, self.height - 1 do
+            local direction = nil
+            if tonumber(room[y][x]) then
+                
+                if y == 1 then direction = 'top'
+                elseif y == self.height then direction = 'bottom'
+                elseif x == 1 then direction = 'left'
+                elseif x == self.width then direction = 'right' end
+
+                --print(x, y, direction)
+                table.insert(self.doorways, Doorway(direction, false, self, x, y))
             end
         end
     end
@@ -282,14 +345,12 @@ function RoomCSV:render()
         end
     end
 
-    -- render doorways; stencils are placed where the arches are after so the player can
-    -- move through them convincingly
-    for k, doorway in pairs(self.doorways) do
-        doorway:render(self.adjacentOffsetX, self.adjacentOffsetY)
-    end
-
     for k, object in pairs(self.objects) do
         object:render(self.adjacentOffsetX, self.adjacentOffsetY)
+    end
+
+    for k, doorway in pairs(self.doorways) do
+        doorway:render(self.adjacentOffsetX, self.adjacentOffsetY)
     end
 
     for k, projectile in pairs(self.projectiles) do

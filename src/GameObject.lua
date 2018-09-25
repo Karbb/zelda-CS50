@@ -28,6 +28,12 @@ function GameObject:init(def, x, y)
     self.width = def.width
     self.height = def.height
 
+    self.randomTile = def.randomTile or false
+
+    if self.randomTile then
+        self.tileId = rnd(3)
+    end
+
     -- default empty collision callback
     self.onCollide = function() end
 end
@@ -42,10 +48,18 @@ function GameObject:update(dt)
 end
 
 function GameObject:render(adjacentOffsetX, adjacentOffsetY)
-    love.graphics.draw(gTextures[self.texture], gFrames[self.texture][self.states[self.state].frame or self.frame],
-        self.x + (adjacentOffsetX or 0), self.y + (adjacentOffsetY or 0))
 
+    if not self.randomTile then
+        love.graphics.draw(gTextures[self.texture], gFrames[self.texture][self.states[self.state].frame or self.frame],
+            self.x + (adjacentOffsetX or 0), self.y + (adjacentOffsetY or 0))
+    else
+        love.graphics.draw(gTextures[self.texture], gFrames[self.texture][self.states[self.state].frame[self.tileId] or self.frame],
+        self.x + (adjacentOffsetX or 0), self.y + (adjacentOffsetY or 0))
+    end
+
+        --[[
     love.graphics.setColor(255, 0, 255, 255)
     love.graphics.rectangle('line', self.x, self.y, self.width, self.height)
     love.graphics.setColor(255, 255, 255, 255)
+    ]]
 end

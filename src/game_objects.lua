@@ -83,5 +83,121 @@ GAME_OBJECT_DEFS = {
                 frame = 120
             }
         }
-    }
+    },
+    ['top-left-wall'] = {
+        type = 'wall',
+        texture = 'tiles',
+        frame = 120,
+        width = 16,
+        height = 16,
+        solid = true,
+        defaultState = 'default',
+        states = {
+            ['default'] = {
+                frame = 4
+            }
+        }
+    },
+    ['bottom-left-wall'] = {
+        type = 'wall',
+        texture = 'tiles',
+        frame = 120,
+        width = 16,
+        height = 16,
+        solid = true,
+        defaultState = 'default',
+        states = {
+            ['default'] = {
+                frame = 23
+            }
+        }
+    },
+    ['top-right-wall'] = {
+        type = 'wall',
+        texture = 'tiles',
+        frame = 120,
+        width = 16,
+        height = 16,
+        solid = true,
+        defaultState = 'default',
+        states = {
+            ['default'] = {
+                frame = 5
+            }
+        }
+    },
+    ['bottom-right-wall'] = {
+        type = 'wall',
+        texture = 'tiles',
+        frame = 120,
+        width = 16,
+        height = 16,
+        solid = true,
+        defaultState = 'default',
+        states = {
+            ['default'] = {
+                frame = 24
+            }
+        }
+    },
+    ['left-wall'] = {
+        type = 'wall',
+        texture = 'tiles',
+        frame = 120,
+        width = 16,
+        height = 16,
+        solid = true,
+        randomTile = true,
+        defaultState = 'default',
+        states = {
+            ['default'] = {
+                frame = TILE_LEFT_WALLS
+            }
+        }
+    },
+    ['right-wall'] = {
+        type = 'wall',
+        texture = 'tiles',
+        frame = 120,
+        width = 16,
+        height = 16,
+        solid = true,
+        randomTile = true,
+        defaultState = 'default',
+        states = {
+            ['default'] = {
+                frame = TILE_RIGHT_WALLS
+            }
+        }
+    },
+    ['top-wall'] = {
+        type = 'wall',
+        texture = 'tiles',
+        frame = 120,
+        width = 16,
+        height = 16,
+        solid = true,
+        randomTile = true,
+        defaultState = 'default',
+        states = {
+            ['default'] = {
+                frame = TILE_TOP_WALLS
+            }
+        }
+    },
+    ['bottom-wall'] = {
+        type = 'wall',
+        texture = 'tiles',
+        frame = 120,
+        width = 16,
+        height = 16,
+        solid = true,
+        randomTile = true,
+        defaultState = 'default',
+        states = {
+            ['default'] = {
+                frame = TILE_BOTTOM_WALLS
+            }
+        }
+    },
 }

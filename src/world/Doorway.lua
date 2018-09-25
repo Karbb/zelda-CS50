@@ -13,26 +13,23 @@ function Doorway:init(direction, open, room, x, y)
     self.open = open
     self.room = room
 
-    if x ~= nil then self.x = x end
-    if x ~= nil then self.x = x end
-
     if direction == 'left' then
         self.x = MAP_RENDER_OFFSET_X
-        self.y = MAP_RENDER_OFFSET_Y + (MAP_HEIGHT / 2) * TILE_SIZE - TILE_SIZE
+        self.y = MAP_RENDER_OFFSET_Y + (y or (MAP_HEIGHT / 2) ) * TILE_SIZE - TILE_SIZE
         self.height = 32
         self.width = 16
     elseif direction == 'right' then
         self.x = MAP_RENDER_OFFSET_X + (MAP_WIDTH * TILE_SIZE) - TILE_SIZE
-        self.y = MAP_RENDER_OFFSET_Y + (MAP_HEIGHT / 2 * TILE_SIZE) - TILE_SIZE
+        self.y = MAP_RENDER_OFFSET_Y + ((y or (MAP_HEIGHT / 2) ) * TILE_SIZE) - TILE_SIZE
         self.height = 32
         self.width = 16
     elseif direction == 'top' then
-        self.x = MAP_RENDER_OFFSET_X + (MAP_WIDTH / 2 * TILE_SIZE) - TILE_SIZE
+        self.x = MAP_RENDER_OFFSET_X + ( (x or (MAP_WIDTH / 2) ) * TILE_SIZE) - TILE_SIZE
         self.y = MAP_RENDER_OFFSET_Y
         self.height = 16
         self.width = 32
     else
-        self.x = MAP_RENDER_OFFSET_X + (MAP_WIDTH / 2 * TILE_SIZE) - TILE_SIZE
+        self.x = MAP_RENDER_OFFSET_X + ( (x or (MAP_WIDTH / 2) ) * TILE_SIZE) - TILE_SIZE
         self.y = MAP_RENDER_OFFSET_Y + (MAP_HEIGHT * TILE_SIZE) - TILE_SIZE
         self.height = 16
         self.width = 32

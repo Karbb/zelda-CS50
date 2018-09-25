@@ -20,7 +20,6 @@ function Dungeon:init(player)
         self.currentRoom = Room(self.player)
     end
 
-
     -- room we're moving camera to during a shift; becomes active room afterwards
     self.nextRoom = nil
 
