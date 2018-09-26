@@ -13,7 +13,8 @@ function StartState:init()
 end
 
 function StartState:enter(params)
-
+    self.rooms = readRoomsFromFiles()
+    print_r(rooms)
 end
 
 function StartState:update(dt)
@@ -22,7 +23,7 @@ function StartState:update(dt)
     end
 
     if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
-        gStateMachine:change('play')
+        gStateMachine:change('play', self.rooms)
     end
 end
 

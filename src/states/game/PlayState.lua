@@ -41,7 +41,7 @@ function PlayState:init()
 end
 
 function PlayState:enter(params)
-
+    print_r(params)
 end
 
 function PlayState:update(dt)
