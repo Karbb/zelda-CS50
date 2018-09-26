@@ -42,6 +42,7 @@ require 'src/states/entity/player/PlayerCarryIdleState'
 require 'src/states/game/GameOverState'
 require 'src/states/game/PlayState'
 require 'src/states/game/StartState'
+require 'src/states/game/ErrorState'
 
 gTextures = {
     ['tiles'] = love.graphics.newImage('graphics/tilesheet.png'),

@@ -25,9 +25,6 @@ function PlayState:init()
         -- rendering and collision offset for spaced sprites
         offsetY = 5
     }
-
-    self.dungeon = Dungeon(self.player)
-    self.currentRoom = Room(self.player)
     
     self.player.stateMachine = StateMachine {
         ['walk'] = function() return PlayerWalkState(self.player, self.dungeon) end,
@@ -41,7 +38,9 @@ function PlayState:init()
 end
 
 function PlayState:enter(params)
-    print_r(params)
+    self.rooms = params.rooms
+
+    self.dungeon = Dungeon(self.player, self.rooms)
 end
 
 function PlayState:update(dt)

@@ -13,8 +13,12 @@ function StartState:init()
 end
 
 function StartState:enter(params)
-    self.rooms = readRoomsFromFiles()
-    print_r(rooms)
+    self.import = readRoomsFromFiles()
+    if self.import.message ~= nil then
+        gStateMachine:change('error', { message = self.import.message} )
+    else
+        
+    end
 end
 
 function StartState:update(dt)
@@ -23,7 +27,7 @@ function StartState:update(dt)
     end
 
     if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
-        gStateMachine:change('play', self.rooms)
+        gStateMachine:change('play', { rooms = self.import} )
     end
 end
 

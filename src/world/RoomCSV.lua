@@ -24,6 +24,8 @@ function RoomCSV:init(player, room)
     self.objects = {}
     self.entities = {}
 
+    self.levelNumber = room.
+
     self:generateWallsAndFloors(room)
 
     -- entities in the room
@@ -249,7 +251,6 @@ function RoomCSV:generateDoorways(room)
                 elseif x == 1 then direction = 'left'
                 elseif x == self.width then direction = 'right' end
 
-                --print(x, y, direction)
                 table.insert(self.doorways, Doorway(direction, false, self, x, y))
             end
         end
@@ -265,7 +266,6 @@ function RoomCSV:generateDoorways(room)
                 elseif x == 1 then direction = 'left'
                 elseif x == self.width then direction = 'right' end
 
-                --print(x, y, direction)
                 table.insert(self.doorways, Doorway(direction, false, self, x, y))
             end
         end

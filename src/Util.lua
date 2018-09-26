@@ -71,3 +71,58 @@ function print_r ( t )
     end
     print()
 end
+
+function readRoomsFromFiles()
+    local rooms = {}
+    -- check if folder exists
+    if love.filesystem.exists("levels") then
+        local files = love.filesystem.getDirectoryItems("levels")
+
+        -- check if there are some files in folder
+        if #files > 0 then
+           
+            for k, file in pairs(files) do
+                -- TODO: check regex :|
+                if tonumber(string.match(file, "%d+")) ~= nil then
+                    table.insert(rooms, 
+                    { rooms = 
+                        { number = string.match(file, "%d+"), room = parseLevel("levels" .. "/" .. file)}
+                    }
+                )
+                end
+            end
+
+            -- no valid file names found
+            if #rooms > 0 then
+                return rooms
+            else 
+                print("No valid filenames found")
+            return { rooms = nil, message = { "No files with valid names found" } }
+            end
+
+        else
+            print("No level files found")
+            return { rooms = nil, message = { "No level files found" } }
+        end
+    else
+        print("Level folder not found")
+        return { rooms = nil, message = { "Level folder not found" } }
+    end
+end
+
+function parseLevel(level, number)
+    local room = {}
+    for line in love.filesystem.lines(level) do
+        local row = line:split(",")
+        table.insert(room, {number, row})
+    end
+
+    return room
+end
+
+function string:split(sep)
+    local sep, fields = sep, {}
+    local pattern = string.format("([^%s]+)", sep)
+    self:gsub(pattern, function(c) fields[#fields+1] = c end)
+    return fields
+ end
