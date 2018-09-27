@@ -36,15 +36,17 @@ function GameObject:init(def, x, y)
 
     -- default empty collision callback
     self.onCollide = function() end
+    
+    self.hitbox = Hitbox(self.x + 2, self.y + 2, self.width - 4, self.height - 4)
 end
 
 function GameObject:collides(target)
-    return not (self.x + self.width < target.x or self.x > target.x + target.width or
-                self.y + self.height < target.y or self.y > target.y + target.height)
+    return not (self.hitbox.x + self.hitbox.width < target.x or self.hitbox.x > target.x + target.width or
+                self.hitbox.y + self.hitbox.height < target.y or self.hitbox.y > target.y + target.height)
 end
 
 function GameObject:update(dt)
-
+    self.hitbox = Hitbox(self.x + 2, self.y + 2, self.width - 4, self.height - 4)
 end
 
 function GameObject:render(adjacentOffsetX, adjacentOffsetY)
@@ -57,9 +59,8 @@ function GameObject:render(adjacentOffsetX, adjacentOffsetY)
         self.x + (adjacentOffsetX or 0), self.y + (adjacentOffsetY or 0))
     end
 
-        --[[
     love.graphics.setColor(255, 0, 255, 255)
-    love.graphics.rectangle('line', self.x, self.y, self.width, self.height)
+    love.graphics.rectangle('line', self.hitbox.x, self.hitbox.y, self.hitbox.width, self.hitbox.height)
     love.graphics.setColor(255, 255, 255, 255)
-    ]]
+
 end

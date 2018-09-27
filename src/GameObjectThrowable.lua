@@ -7,17 +7,31 @@
 
 GameObjectThrowable = Class{_includes = GameObject}
 
-function GameObjectThrowable:init(def, x, y)
-    GameObject.init(self, def, x, y)
+function GameObjectThrowable:init(def, x, y, room)
+   
     self.onThrow = def.onThrow
     self.projectile = false
     self.maxDistance = 64
     self.distance = 0
+    self.room = room
+
+    GameObject.init(self, def, x, y)
+
+    self.hitbox = Hitbox(self.x + 4, self.y + 4, self.width - 8, self.height - 8)
 end
 
 function GameObjectThrowable:update(dt)
     if self.projectile then
-        if self:checkWallCollisions() or self.distance > self.maxDistance then
+    
+        local objectCollision = false
+        for k, obj in pairs(self.room.objects) do
+
+            if GameObject.collides(self, obj) then
+                objectCollision = true
+            end
+        end
+
+        if objectCollision or self.distance > self.maxDistance then
             self:destroy()
         end
 
@@ -25,8 +39,9 @@ function GameObjectThrowable:update(dt)
         self.y = self.y + self.dy * dt
         self.distance = self.distance + OBJECT_MOV_SPEED*dt
     end
+    
+    self.hitbox = Hitbox(self.x + 4, self.y + 4, self.width - 8, self.height - 8)
 end
-
 
 function GameObjectThrowable:destroy()
     self.state = 'broken'
@@ -51,6 +66,7 @@ end
 
 function GameObjectThrowable:fire(self, room, dx, dy)
     self.projectile = true
+    self.room = room
     self.onThrow(self, room, dx, dy)
 end
 

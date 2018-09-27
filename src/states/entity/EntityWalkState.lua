@@ -20,28 +20,6 @@ function EntityWalkState:init(entity, room)
 
     -- keeps track of whether we just hit a wall
     self.bumped = false
-
-    if direction == 'left' then
-        hitboxWidth = 14
-        hitboxHeight = 14
-        hitboxX = self.entity.x + 1
-        hitboxY = self.entity.y + 1
-    elseif direction == 'right' then
-        hitboxWidth = 14
-        hitboxHeight = 14
-        hitboxX = self.entity.x + 1
-        hitboxY = self.entity.y + 1
-    elseif direction == 'up' then
-        hitboxWidth = 14
-        hitboxHeight = 14
-        hitboxX = self.entity.x + 1
-        hitboxY = self.entity.y + 1
-    else
-        hitboxWidth = 14
-        hitboxHeight = 14
-        hitboxX = self.entity.x
-        hitboxY = self.entity.y + self.entity.height
-    end
 end
 
 function EntityWalkState:update(dt)
@@ -59,20 +37,11 @@ function EntityWalkState:update(dt)
             self.entity.x = oldX
             self.bumped = true
         end
-        if self.entity.x <= MAP_RENDER_OFFSET_X + TILE_SIZE then 
-            self.entity.x = MAP_RENDER_OFFSET_X + TILE_SIZE
-            self.bumped = true
-        end
     elseif self.entity.direction == 'right' then
         self.entity.x = self.entity.x + self.entity.walkSpeed * dt
 
         if self:checkObjCollision() then
             self.entity.x = oldX
-            self.bumped = true
-        end
-
-        if self.entity.x + self.entity.width >= VIRTUAL_WIDTH - TILE_SIZE * MAP_COLLISION_OFFSET then
-            self.entity.x = VIRTUAL_WIDTH - TILE_SIZE * MAP_COLLISION_OFFSET - self.entity.width
             self.bumped = true
         end
     elseif self.entity.direction == 'up' then
@@ -81,25 +50,12 @@ function EntityWalkState:update(dt)
         if self:checkObjCollision() then
             self.entity.y = oldY
             self.bumped = true
-        end
-
-        if self.entity.y <= MAP_RENDER_OFFSET_Y + TILE_SIZE - self.entity.height / 2 then 
-            self.entity.y = MAP_RENDER_OFFSET_Y + TILE_SIZE - self.entity.height / 2
-            self.bumped = true
-        end
+        end 
     elseif self.entity.direction == 'down' then
         self.entity.y = self.entity.y + self.entity.walkSpeed * dt
 
         if self:checkObjCollision() then
             self.entity.y = oldY
-            self.bumped = true
-        end
-
-        local bottomEdge = VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) 
-            + MAP_RENDER_OFFSET_Y - TILE_SIZE
-
-        if self.entity.y + self.entity.height >= bottomEdge then
-            self.entity.y = bottomEdge - self.entity.height
             self.bumped = true
         end
     end
@@ -110,7 +66,7 @@ function EntityWalkState:checkObjCollision()
         local objects = self.room.objects
 
         for k, obj in pairs(self.room.objects) do
-            if obj.solid and self.entity:collides(obj) then
+            if obj.solid and self.entity:collides(obj.hitbox) then
                 return true
             end
         end
@@ -148,7 +104,7 @@ function EntityWalkState:render()
     love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
         math.floor(self.entity.x - self.entity.offsetX), math.floor(self.entity.y - self.entity.offsetY))
     
-    -- love.graphics.setColor(255, 0, 255, 255)
-    -- love.graphics.rectangle('line', self.entity.x, self.entity.y, self.entity.width, self.entity.height)
-    -- love.graphics.setColor(255, 255, 255, 255)
+     love.graphics.setColor(255, 0, 255, 255)
+     love.graphics.rectangle('line', self.entity.x, self.entity.y, self.entity.width, self.entity.height)
+     love.graphics.setColor(255, 255, 255, 255)
 end
