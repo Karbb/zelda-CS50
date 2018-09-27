@@ -59,8 +59,10 @@ function GameObject:render(adjacentOffsetX, adjacentOffsetY)
         self.x + (adjacentOffsetX or 0), self.y + (adjacentOffsetY or 0))
     end
 
+    --[[
     love.graphics.setColor(255, 0, 255, 255)
     love.graphics.rectangle('line', self.hitbox.x, self.hitbox.y, self.hitbox.width, self.hitbox.height)
     love.graphics.setColor(255, 255, 255, 255)
+    ]]
 
 end

@@ -46,82 +46,13 @@ function PlayerCarryState:update(dt)
     --CS50: begin item lifting
     if love.keyboard.wasPressed('return') then
         self.entity.carriedObject.x = self.entity.x
-        self.entity.carriedObject.y = self.entity.y + 6
+        self.entity.carriedObject.y = self.entity.y + 8
         self.entity:throwObject(self.entity.carriedObject, self.room, self.entity.direction)
         self.entity:changeState('idle')
     end
 
     -- perform base collision detection against walls
     EntityWalkState.update(self, dt)
-
-    -- if we bumped something when checking collision, check any object collisions
-    if self.bumped then
-        if self.entity.direction == 'left' then
-            
-            -- temporarily adjust position
-            self.entity.x = self.entity.x - PLAYER_WALK_SPEED * dt
-            
-            for k, doorway in pairs(self.room.doorways) do
-                if self.entity:collides(doorway) and doorway.open then
-
-                    -- shift entity to center of door to avoid phasing through wall
-                    self.entity.y = doorway.y + 4
-                    Event.dispatch('shift-left', doorway.nextRoom)
-                end
-            end
-
-            -- readjust
-            self.entity.x = self.entity.x + PLAYER_WALK_SPEED * dt
-        elseif self.entity.direction == 'right' then
-            
-            -- temporarily adjust position
-            self.entity.x = self.entity.x + PLAYER_WALK_SPEED * dt
-            
-            for k, doorway in pairs(self.room.doorways) do
-                if self.entity:collides(doorway) and doorway.open then
-
-                    -- shift entity to center of door to avoid phasing through wall
-                    self.entity.y = doorway.y + 4
-                    Event.dispatch('shift-right', doorway.nextRoom)
-                end
-            end
-
-            -- readjust
-            self.entity.x = self.entity.x - PLAYER_WALK_SPEED * dt
-        elseif self.entity.direction == 'up' then
-            
-            -- temporarily adjust position
-            self.entity.y = self.entity.y - PLAYER_WALK_SPEED * dt
-            
-            for k, doorway in pairs(self.room.doorways) do
-                if self.entity:collides(doorway) and doorway.open then
-
-                    -- shift entity to center of door to avoid phasing through wall
-                    self.entity.x = doorway.x + 8
-                    Event.dispatch('shift-up', doorway.nextRoom)
-                end
-            end
-
-            -- readjust
-            self.entity.y = self.entity.y + PLAYER_WALK_SPEED * dt
-        else
-            
-            -- temporarily adjust position
-            self.entity.y = self.entity.y + PLAYER_WALK_SPEED * dt
-            
-            for k, doorway in pairs(self.room.doorways) do
-                if self.entity:collides(doorway) and doorway.open then
-
-                    -- shift entity to center of door to avoid phasing through wall
-                    self.entity.x = doorway.x + 8
-                    Event.dispatch('shift-down', doorway.nextRoom)
-                end
-            end
-
-            -- readjust
-            self.entity.y = self.entity.y - PLAYER_WALK_SPEED * dt
-        end
-    end
 end
 
 function PlayerCarryState:render()
