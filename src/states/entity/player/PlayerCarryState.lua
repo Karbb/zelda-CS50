@@ -66,7 +66,7 @@ function PlayerCarryState:update(dt)
 
                     -- shift entity to center of door to avoid phasing through wall
                     self.entity.y = doorway.y + 4
-                    Event.dispatch('shift-left')
+                    Event.dispatch('shift-left', doorway.nextRoom)
                 end
             end
 
@@ -82,7 +82,7 @@ function PlayerCarryState:update(dt)
 
                     -- shift entity to center of door to avoid phasing through wall
                     self.entity.y = doorway.y + 4
-                    Event.dispatch('shift-right')
+                    Event.dispatch('shift-right', doorway.nextRoom)
                 end
             end
 
@@ -98,7 +98,7 @@ function PlayerCarryState:update(dt)
 
                     -- shift entity to center of door to avoid phasing through wall
                     self.entity.x = doorway.x + 8
-                    Event.dispatch('shift-up')
+                    Event.dispatch('shift-up', doorway.nextRoom)
                 end
             end
 
@@ -114,7 +114,7 @@ function PlayerCarryState:update(dt)
 
                     -- shift entity to center of door to avoid phasing through wall
                     self.entity.x = doorway.x + 8
-                    Event.dispatch('shift-down')
+                    Event.dispatch('shift-down', doorway.nextRoom)
                 end
             end
 

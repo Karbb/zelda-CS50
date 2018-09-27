@@ -85,9 +85,7 @@ function readRoomsFromFiles()
                 -- TODO: check regex :|
                 if tonumber(string.match(file, "%d+")) ~= nil then
                     table.insert(rooms, 
-                    { rooms = 
                         { number = string.match(file, "%d+"), room = parseLevel("levels" .. "/" .. file)}
-                    }
                 )
                 end
             end
@@ -110,11 +108,11 @@ function readRoomsFromFiles()
     end
 end
 
-function parseLevel(level, number)
+function parseLevel(level)
     local room = {}
     for line in love.filesystem.lines(level) do
         local row = line:split(",")
-        table.insert(room, {number, row})
+        table.insert(room, row)
     end
 
     return room

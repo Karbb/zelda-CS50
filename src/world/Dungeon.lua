@@ -11,8 +11,18 @@ Dungeon = Class{}
 function Dungeon:init(player, rooms)
     self.player = player
 
-    -- current room we're operating in
-    self.currentRoom = Room(self.player)
+    self.rooms = rooms
+
+    if self.rooms ~= nil and #self.rooms > 0 then
+        for k,room in pairs(self.rooms) do
+            if tonumber(room.number) == 0 then
+                self.currentRoom = RoomCSV(self.player, room.room)
+            end
+        end
+    else
+        -- current room we're operating in
+        self.currentRoom = Room(self.player)
+    end
 
     -- room we're moving camera to during a shift; becomes active room afterwards
     self.nextRoom = nil
@@ -24,29 +34,29 @@ function Dungeon:init(player, rooms)
 
     -- trigger camera translation and adjustment of rooms whenever the player triggers a shift
     -- via a doorway collision, triggered in PlayerWalkState
-    Event.on('shift-left', function()
-        self:beginShifting(-VIRTUAL_WIDTH, 0)
+    Event.on('shift-left', function(nextRoom)
+        self:beginShifting(-VIRTUAL_WIDTH, 0, nextRoom)
     end)
 
-    Event.on('shift-right', function()
-        self:beginShifting(VIRTUAL_WIDTH, 0)
+    Event.on('shift-right', function(nextRoom)
+        self:beginShifting(VIRTUAL_WIDTH, 0,nextRoom)
     end)
 
-    Event.on('shift-up', function()
-        self:beginShifting(0, -VIRTUAL_HEIGHT)
+    Event.on('shift-up', function(nextRoom)
+        self:beginShifting(0, -VIRTUAL_HEIGHT, nextRoom)
     end)
 
-    Event.on('shift-down', function()
-        self:beginShifting(0, VIRTUAL_HEIGHT)
+    Event.on('shift-down', function(nextRoom)
+        self:beginShifting(0, VIRTUAL_HEIGHT, nextRoom)
     end)
 end
 
 --[[
     Prepares for the camera shifting process, kicking off a tween of the camera position.
 ]]
-function Dungeon:beginShifting(shiftX, shiftY)
+function Dungeon:beginShifting(shiftX, shiftY, nextRoom)
     self.shifting = true
-    self.nextRoom = Room(self.player, self)
+    self.nextRoom = self:generateNextRoom(nextRoom) or Room(self.player, self)
 
     -- start all doors in next room as open until we get in
     for k, doorway in pairs(self.nextRoom.doorways) do
@@ -113,6 +123,18 @@ function Dungeon:finishShifting()
     self.nextRoom = nil
     self.currentRoom.adjacentOffsetX = 0
     self.currentRoom.adjacentOffsetY = 0 
+end
+
+function Dungeon:generateNextRoom(number)
+    if self.rooms ~= nil and #self.rooms > 0 then
+        for k,room in pairs(self.rooms) do
+            if tonumber(room.number) == number then
+                return RoomCSV(self.player, room.room)
+            end
+        end
+    else
+        return nil
+    end
 end
 
 function Dungeon:update(dt)

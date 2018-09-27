@@ -24,8 +24,6 @@ function RoomCSV:init(player, room)
     self.objects = {}
     self.entities = {}
 
-    self.levelNumber = room.
-
     self:generateWallsAndFloors(room)
 
     -- entities in the room
@@ -60,7 +58,6 @@ end
     Randomly creates an assortment of enemies for the player to fight.
 ]]
 function RoomCSV:generateEntities(room)
-
     for y = 2, self.height-1 do
         for x = 2, self.width-1 do
             if room[y][x] == CSV_SKELETON then
@@ -151,11 +148,11 @@ end
     of said tiles for visual variety.
 ]]
 function RoomCSV:generateWallsAndFloors(room)
+    
     for y = 1, self.height do
         table.insert(self.tiles, {})
 
         for x = 1, self.width do
-
             local id = TILE_EMPTY
 
             if x == 1 and y == 1 then
@@ -211,6 +208,7 @@ function RoomCSV:generateWallsAndFloors(room)
             else
                 id = TILE_FLOORS[math.random(#TILE_FLOORS)]
                 if room[y][x] == CSV_WALL then
+                    
                     id = TILE_CENTER_WALLS[math.random(#TILE_CENTER_WALLS)]
                     local wall = GameObject(
                         GAME_OBJECT_DEFS['wall'],
@@ -250,8 +248,8 @@ function RoomCSV:generateDoorways(room)
                 elseif y == self.height then direction = 'bottom'
                 elseif x == 1 then direction = 'left'
                 elseif x == self.width then direction = 'right' end
-
-                table.insert(self.doorways, Doorway(direction, false, self, x, y))
+                local nextRoom = tonumber(room[y][x])
+                table.insert(self.doorways, Doorway(direction, false, self, x, y, nextRoom))
             end
         end
     end
