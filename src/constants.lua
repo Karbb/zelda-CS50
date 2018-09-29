@@ -77,3 +77,6 @@ CSV_GHOST = "G"
 CSV_SLIME = "L"
 
 CSV_WALL = "W"
+
+CSV_OOZE = "M"
+CSV_FIRE = "F"

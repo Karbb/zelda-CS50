@@ -25,7 +25,9 @@ function Entity:init(def)
     self.offsetX = def.offsetX or 0
     self.offsetY = def.offsetY or 0
 
-    self.walkSpeed = def.walkSpeed
+    self.baseWalkSpeed = def.walkSpeed
+    self.walkSpeed = self.baseWalkSpeed
+    self.slowedWalkSpeed =  self.walkSpeed*0.6
 
     self.health = def.health
 
@@ -37,6 +39,8 @@ function Entity:init(def)
 
     self.dead = false
     self.dropped = false
+
+    self.slowed = false
 end
 
 function Entity:createAnimations(animations)
@@ -69,6 +73,10 @@ function Entity:heal(heal)
     self.health = self.health + heal
 end
 
+function Entity:slowed()
+    self.slowed = true
+end
+
 function Entity:goInvulnerable(duration)
     self.invulnerable = true
     self.invulnerableDuration = duration
@@ -99,6 +107,12 @@ function Entity:update(dt)
 
     if self.currentAnimation then
         self.currentAnimation:update(dt)
+    end
+
+    if self.slowed then
+        self.walkSpeed = self.slowedWalkSpeed
+    else
+        self.walkSpeed = self.baseWalkSpeed
     end
 end
 

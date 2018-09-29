@@ -91,8 +91,6 @@ function SkeletonWalkState:processAI(params, dt)
     else
         self.entity:changeState('idle')
     end
-
-    print(dx, dy, self.entity.direction)
         
     self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
 end

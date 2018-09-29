@@ -26,7 +26,7 @@ function GameObjectThrowable:update(dt)
         local objectCollision = false
         for k, obj in pairs(self.room.objects) do
 
-            if GameObject.collides(self, obj) then
+            if obj.solid and GameObject.collides(self, obj) then
                 objectCollision = true
             end
         end

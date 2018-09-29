@@ -146,6 +146,24 @@ function RoomCSV:generateObjects(room)
                 )
         
                 table.insert(self.objects, pot)
+            elseif room[y][x] == CSV_OOZE then
+                local ooze = GameObjectThrowable(
+                    GAME_OBJECT_DEFS['ooze-trap'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                )
+
+            
+        
+                table.insert(self.objects, ooze)
+            elseif room[y][x] == CSV_FIRE then
+                local fire = GameObjectThrowable(
+                    GAME_OBJECT_DEFS['fire-trap'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                )
+        
+                table.insert(self.objects, fire)
             end
         end
     end 
@@ -320,8 +338,14 @@ function RoomCSV:update(dt)
 
         -- trigger collision callback on object
         if self.player:collides(object) then
-            object:onCollide()
+            object:onCollide(self.player)
             if object.type == 'consumable' then object:onConsume(self, k) end
+        end
+
+        for k, entity in pairs(self.entities) do
+            if entity:collides(object) then
+                object:onCollide(entity)
+            end
         end
     end
 

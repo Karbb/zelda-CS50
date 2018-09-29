@@ -200,4 +200,32 @@ GAME_OBJECT_DEFS = {
             }
         }
     },
+    ['fire-trap'] = {
+        type = 'trap',
+        texture = 'tiles',
+        frame = 101,
+        width = 16,
+        height = 16,
+        solid = false,
+        defaultState = 'default',
+        states = {
+            ['default'] = {
+                frame = 101
+            }
+        }
+    },
+    ['ooze-trap'] = {
+        type = 'trap',
+        texture = 'tiles',
+        frame = 82,
+        width = 16,
+        height = 16,
+        solid = false,
+        defaultState = 'default',
+        states = {
+            ['default'] = {
+                frame = 82
+            }
+        }
+    }
 }
