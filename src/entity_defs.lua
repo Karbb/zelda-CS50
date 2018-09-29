@@ -333,5 +333,5 @@ ENTITY_DEFS = {
                 frames = {143}
             }
         }
-    },
+    }
 }

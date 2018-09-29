@@ -252,10 +252,11 @@ function RoomCSV:generateDoorways(room)
         for x = 1, self.width, self.width - 1 do
             local direction = nil
             if tonumber(room[y][x]) then
-                if y == 1 then direction = 'top'
-                elseif y == self.height then direction = 'bottom'
-                elseif x == 1 then direction = 'left'
-                elseif x == self.width then direction = 'right' end
+                if x == 1 then 
+                    direction = 'left'
+                elseif x == self.width then 
+                    direction = 'right' 
+                end
                 local nextRoom = tonumber(room[y][x])
                 table.insert(self.doorways, Doorway(direction, false, self, x, y, nextRoom))
             end
@@ -267,12 +268,13 @@ function RoomCSV:generateDoorways(room)
             local direction = nil
             if tonumber(room[y][x]) then
                 
-                if y == 1 then direction = 'top'
-                elseif y == self.height then direction = 'bottom'
-                elseif x == 1 then direction = 'left'
-                elseif x == self.width then direction = 'right' end
+                if y == 1 then 
+                    direction = 'top'
+                elseif y == self.height then 
+                    direction = 'bottom'
+                end
 
-                table.insert(self.doorways, Doorway(direction, false, self, x, y))
+                table.insert(self.doorways, Doorway(direction, false, self, x, y, nextRoom))
             end
         end
     end

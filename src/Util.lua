@@ -108,6 +108,10 @@ function readRoomsFromFiles()
     end
 end
 
+function string:trim()
+    return string.gsub(self, "%s", "")
+end
+
 function parseLevel(level)
     local room = {}
     for line in love.filesystem.lines(level) do
@@ -121,6 +125,6 @@ end
 function string:split(sep)
     local sep, fields = sep, {}
     local pattern = string.format("([^%s]+)", sep)
-    self:gsub(pattern, function(c) fields[#fields+1] = c end)
+    self:gsub(pattern, function(c) fields[#fields+1] = c:trim() end)
     return fields
  end

@@ -22,7 +22,7 @@ end
 
 function SkeletonIdleState:processAI(params, dt)
     if self.waitDuration == 0 then
-        self.waitDuration = math.random(5)
+        self.waitDuration = 1
     else
         self.waitTimer = self.waitTimer + dt
 

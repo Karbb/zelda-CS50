@@ -75,26 +75,24 @@ end
 
 function SkeletonWalkState:processAI(params, dt)
     local room = params.room
-    local directions = {'left', 'right', 'up', 'down'}
+    local player = room.player
 
-    if self.moveDuration == 0 or self.bumped then
-        
-        -- set an initial move duration and direction
-        self.moveDuration = math.random(5)
-        self.entity.direction = directions[math.random(#directions)]
-        self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
-    elseif self.movementTimer > self.moveDuration then
-        self.movementTimer = 0
+    local dx = math.abs(player.x - self.entity.x)
+    local dy = math.abs(player.y - self.entity.y)
 
-        -- chance to go idle
-        if math.random(3) == 1 then
-            self.entity:changeState('idle')
-        else
-            self.moveDuration = math.random(5)
-            self.entity.direction = directions[math.random(#directions)]
-            self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
-        end
+    if self.entity.x < player.x - 6 and dx > dy then
+        self.entity.direction = 'right'
+    elseif self.entity.x > player.x + 6 and dx > dy then
+        self.entity.direction = 'left'
+    elseif self.entity.y > player.y - 6 and dx < dy then
+        self.entity.direction = 'up'
+    elseif self.entity.y < player.y + 6 and dx < dy then
+        self.entity.direction = 'down'
+    else
+        self.entity:changeState('idle')
     end
 
-    self.movementTimer = self.movementTimer + dt
+    print(dx, dy, self.entity.direction)
+        
+    self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
 end
