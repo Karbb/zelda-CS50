@@ -30,6 +30,9 @@ require 'src/states/BaseState'
 require 'src/states/entity/EntityIdleState'
 require 'src/states/entity/EntityWalkState'
 
+require 'src/states/entity/skeleton2/SkeletonIdleState'
+require 'src/states/entity/skeleton2/SkeletonWalkState'
+
 require 'src/states/entity/player/PlayerIdleState'
 require 'src/states/entity/player/PlayerSwingSwordState'
 require 'src/states/entity/player/PlayerWalkState'

@@ -63,11 +63,12 @@ function RoomCSV:generateEntities(room)
             if room[y][x] == CSV_SKELETON then
                 self:generateEntity('skeleton', x ,y)
             elseif room[y][x] == CSV_GHOST then
-                self:generateEntity('ghost', x ,y)
+                self:generateEntity('ghost', x , y)
             elseif room[y][x] == CSV_SLIME then
-                self:generateEntity('slime', x ,y)
+                self:generateEntity('slime', x , y)
+            elseif room[y][x] == CSV_SKELETON2 then
+                self:generateEntity('skeleton2', x, y) 
             end
-
         end
     end
 end
@@ -94,6 +95,13 @@ function RoomCSV:generateEntity(type, x ,y)
         ['walk'] = function() return EntityWalkState(entity, self) end,
         ['idle'] = function() return EntityIdleState(entity, self) end
     }
+
+    if type == 'skeleton2' then
+        entity.stateMachine = StateMachine {
+            ['walk'] = function() return SkeletonWalkState(entity, self) end,
+            ['idle'] = function() return SkeletonIdleState(entity, self) end
+        }
+    end
 
     entity:changeState('walk')
 end
@@ -319,7 +327,7 @@ function RoomCSV:update(dt)
         projectile:update(dt)
 
         for k, entity in pairs(self.entities) do
-            if entity:collides(projectile) then
+            if projectile.projectile and entity:collides(projectile) then
                 projectile:destroy()
                 entity:damage(1)
             end

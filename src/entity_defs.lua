@@ -300,5 +300,38 @@ ENTITY_DEFS = {
                 frames = {95}
             }
         }
-    }
+    },
+    ['skeleton2'] = {
+        texture = 'entities',
+        animations = {
+            ['walk-left'] = {
+                frames = {118, 119, 120, 119},
+                interval = 0.2
+            },
+            ['walk-right'] = {
+                frames = {130, 131, 132, 131},
+                interval = 0.2
+            },
+            ['walk-down'] = {
+                frames = {106, 107, 108, 107},
+                interval = 0.2
+            },
+            ['walk-up'] = {
+                frames = {142, 143, 144, 143},
+                interval = 0.2
+            },
+            ['idle-left'] = {
+                frames = {119}
+            },
+            ['idle-right'] = {
+                frames = {131}
+            },
+            ['idle-down'] = {
+                frames = {107}
+            },
+            ['idle-up'] = {
+                frames = {143}
+            }
+        }
+    },
 }

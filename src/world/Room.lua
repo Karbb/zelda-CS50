@@ -13,6 +13,7 @@ function Room:init(player)
     self.height = MAP_HEIGHT
 
     self.tiles = {}
+    self.objects = {}
     self:generateWallsAndFloors()
 
     -- entities in the room
@@ -20,7 +21,6 @@ function Room:init(player)
     self:generateEntities()
 
     -- game objects in the room
-    self.objects = {}
     self:generateObjects()
 
     -- doorways that lead to other dungeon rooms
@@ -128,6 +128,7 @@ end
     of said tiles for visual variety.
 ]]
 function Room:generateWallsAndFloors()
+    
     for y = 1, self.height do
         table.insert(self.tiles, {})
 
@@ -135,27 +136,57 @@ function Room:generateWallsAndFloors()
             local id = TILE_EMPTY
 
             if x == 1 and y == 1 then
-                id = TILE_TOP_LEFT_CORNER
+            table.insert(self.objects, GameObject(
+                GAME_OBJECT_DEFS['top-left-wall'],
+                MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+            ))
             elseif x == 1 and y == self.height then
-                id = TILE_BOTTOM_LEFT_CORNER
+                table.insert(self.objects, GameObject(
+                    GAME_OBJECT_DEFS['bottom-left-wall'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                ))
             elseif x == self.width and y == 1 then
-                id = TILE_TOP_RIGHT_CORNER
+                table.insert(self.objects, GameObject(
+                    GAME_OBJECT_DEFS['top-right-wall'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                ))
             elseif x == self.width and y == self.height then
-                id = TILE_BOTTOM_RIGHT_CORNER
+                table.insert(self.objects, GameObject(
+                    GAME_OBJECT_DEFS['bottom-right-wall'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                ))
             
             -- random left-hand walls, right walls, top, bottom, and floors
             elseif x == 1 then
-                id = TILE_LEFT_WALLS[math.random(#TILE_LEFT_WALLS)]
+                table.insert(self.objects, GameObject(
+                    GAME_OBJECT_DEFS['left-wall'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                ))
             elseif x == self.width then
-                id = TILE_RIGHT_WALLS[math.random(#TILE_RIGHT_WALLS)]
+                table.insert(self.objects, GameObject(
+                    GAME_OBJECT_DEFS['right-wall'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                ))
             elseif y == 1 then
-                id = TILE_TOP_WALLS[math.random(#TILE_TOP_WALLS)]
+                table.insert(self.objects, GameObject(
+                    GAME_OBJECT_DEFS['top-wall'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                ))
             elseif y == self.height then
-                id = TILE_BOTTOM_WALLS[math.random(#TILE_BOTTOM_WALLS)]
-            else
-                id = TILE_FLOORS[math.random(#TILE_FLOORS)]
+                table.insert(self.objects, GameObject(
+                    GAME_OBJECT_DEFS['bottom-wall'],
+                    MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
+                    MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
+                ))
             end
-            
+            id = TILE_FLOORS[math.random(#TILE_FLOORS)]
             table.insert(self.tiles[y], {
                 id = id
             })
@@ -212,7 +243,7 @@ function Room:update(dt)
         projectile:update(dt)
 
         for k, entity in pairs(self.entities) do
-            if entity:collides(projectile) then
+            if projectile.projectile and entity:collides(projectile) then
                 projectile:destroy()
                 entity:damage(1)
             end
