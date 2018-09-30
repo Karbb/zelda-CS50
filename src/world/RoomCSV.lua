@@ -147,21 +147,27 @@ function RoomCSV:generateObjects(room)
         
                 table.insert(self.objects, pot)
             elseif room[y][x] == CSV_OOZE then
-                local ooze = GameObjectThrowable(
+                local ooze = GameObject(
                     GAME_OBJECT_DEFS['ooze-trap'],
                     MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
                     MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
                 )
 
-            
+                ooze.onCollide = function(trap, entity)
+                    entity:slow()
+                end
         
                 table.insert(self.objects, ooze)
             elseif room[y][x] == CSV_FIRE then
-                local fire = GameObjectThrowable(
+                local fire = GameObject(
                     GAME_OBJECT_DEFS['fire-trap'],
                     MAP_RENDER_OFFSET_X + x*TILE_SIZE - TILE_SIZE,
                     MAP_RENDER_OFFSET_Y + y*TILE_SIZE - TILE_SIZE
                 )
+
+                fire.onCollide = function(trap, entity)
+                    entity:fire(3)
+                end
         
                 table.insert(self.objects, fire)
             end

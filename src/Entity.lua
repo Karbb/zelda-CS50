@@ -41,6 +41,10 @@ function Entity:init(def)
     self.dropped = false
 
     self.slowed = false
+
+    self.onFire = false
+    self.onFireDuration = 0
+    self.onFireTimer = 0
 end
 
 function Entity:createAnimations(animations)
@@ -73,8 +77,15 @@ function Entity:heal(heal)
     self.health = self.health + heal
 end
 
-function Entity:slowed()
+function Entity:slow()
     self.slowed = true
+end
+
+function Entity:fire(duration)
+    if not self.invulnerable then
+        self.onFire = true
+        self.onFireDuration = duration
+    end
 end
 
 function Entity:goInvulnerable(duration)
@@ -103,6 +114,16 @@ function Entity:update(dt)
         end
     end
 
+    if self.onFire then
+        self.onFireTimer = self.onFireTimer + dt
+
+        if self.onFireTimer > self.onFireDuration then
+            self.onFire = false
+            self.onFireTimer = 0
+            self.onFireDuration = 0
+        end
+    end
+
     self.stateMachine:update(dt)
 
     if self.currentAnimation then
@@ -111,6 +132,7 @@ function Entity:update(dt)
 
     if self.slowed then
         self.walkSpeed = self.slowedWalkSpeed
+        self.slowed = false
     else
         self.walkSpeed = self.baseWalkSpeed
     end
