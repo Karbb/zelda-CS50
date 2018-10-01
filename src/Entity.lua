@@ -45,6 +45,8 @@ function Entity:init(def)
     self.onFire = false
     self.onFireDuration = 0
     self.onFireTimer = 0
+    self.damageTickTimer = 0
+    self.flashFireTimer = 0
 end
 
 function Entity:createAnimations(animations)
@@ -88,6 +90,13 @@ function Entity:fire(duration)
     end
 end
 
+function Entity:fireOff()
+    self.onFire = false
+    self.onFireDuration = 0
+    self.onFireTimer = 0
+    self.damageTickTimer = 0
+end
+
 function Entity:goInvulnerable(duration)
     self.invulnerable = true
     self.invulnerableDuration = duration
@@ -116,11 +125,20 @@ function Entity:update(dt)
 
     if self.onFire then
         self.onFireTimer = self.onFireTimer + dt
+        self.flashFireTimer = self.flashFireTimer + dt
+        self.damageTickTimer = self.damageTickTimer + dt
 
-        if self.onFireTimer > self.onFireDuration then
+        if self.damageTickTimer > 0.5 then
+            self.damageTickTimer = 0
+            self:damage(1)
+        end
+
+        if self.onFireTimer >= self.onFireDuration then
             self.onFire = false
             self.onFireTimer = 0
             self.onFireDuration = 0
+            self.damageTickTimer = 0
+            self.flashFireTimer = 0
         end
     end
 
@@ -147,6 +165,11 @@ function Entity:render(adjacentOffsetX, adjacentOffsetY)
     if self.invulnerable and self.flashTimer > 0.06 then
         self.flashTimer = 0
         love.graphics.setColor(255, 255, 255, 64)
+    end
+
+    if self.onFire and self.flashFireTimer > 0.5 then
+        self.flashFireTimer = 0
+        love.graphics.setColor(255, 0, 0, 255)
     end
 
     self.x, self.y = self.x + (adjacentOffsetX or 0), self.y + (adjacentOffsetY or 0)

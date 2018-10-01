@@ -86,7 +86,7 @@ function RoomCSV:generateEntity(type, x ,y)
         width = 16,
         height = 16,
 
-        health = 1
+        health = 4
     }
 
     table.insert(self.entities, entity)
@@ -308,6 +308,10 @@ function RoomCSV:update(dt)
     -- don't update anything if we are sliding to another room (we have offsets)
     if self.adjacentOffsetX ~= 0 or self.adjacentOffsetY ~= 0 then return end
 
+    if self.player.health == 0 then
+        gStateMachine:change('game-over')
+    end
+
     self.player:update(dt)
 
     for i = #self.entities, 1, -1 do
@@ -330,11 +334,22 @@ function RoomCSV:update(dt)
         -- collision between the player and entities in the room
         if not entity.dead and not entity.projectile and self.player:collides(entity) and not self.player.invulnerable then
             gSounds['hit-player']:play()
-            self.player:damage(1)
-            self.player:goInvulnerable(1.5)
+           
+            if not self.player.onFire and not entity.onFire then
+                self.player:damage(1)
+                self.player:goInvulnerable(1.5)
+            end
 
-            if self.player.health == 0 then
-                gStateMachine:change('game-over')
+            if self.player.onFire and not entity.invulnerable then
+                entity:fire(3)
+                self.player:fireOff()
+                self.player:goInvulnerable(1.5)
+            end
+
+            if entity.onFire and not self.player.invulnerable then
+                self.player:fire(3)
+                entity:fireOff()
+                entity:goInvulnerable(1.5)
             end
         end
     end
